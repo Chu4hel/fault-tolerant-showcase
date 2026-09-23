@@ -1,6 +1,6 @@
 """Реализация in-memory хранилища цитат с контролем потребления памяти."""
 
-from typing import AsyncIterator, Optional, Tuple
+from collections.abc import AsyncIterator
 
 from src.domain.interfaces.quote_storage import IQuoteStorage
 from src.domain.models.quote import Quote
@@ -18,24 +18,53 @@ class MemoryQuoteStorage(IQuoteStorage):
         """
         self._max_bytes = max_bytes
 
-    async def get(self, quote_id: str) -> Optional[Quote]:
-        """Получить цитату из локального кэша."""
+    async def get(self, quote_id: str) -> Quote | None:
+        """Получить цитату из локального кэша.
+
+        Args:
+            quote_id: Идентификатор цитаты.
+
+        Returns:
+            Объект Quote или None, если запись отсутствует в кэше.
+        """
         raise NotImplementedError
 
     async def put(self, quote: Quote) -> None:
-        """Сохранить или обновить цитату в локальном кэше."""
+        """Сохранить или обновить цитату в локальном кэше.
+
+        Args:
+            quote: Объект цитаты.
+        """
         raise NotImplementedError
 
     async def delete(self, quote_id: str) -> bool:
-        """Удалить цитату из локального кэша и пометить как снятую."""
+        """Удалить цитату из локального кэша и пометить как снятую.
+
+        Args:
+            quote_id: Идентификатор цитаты.
+
+        Returns:
+            True, если цитата была удалена, иначе False.
+        """
         raise NotImplementedError
 
     async def import_snapshot_stream(
         self, stream: AsyncIterator[bytes]
-    ) -> Tuple[int, int]:
-        """Потоковая обработка и импорт снимка каталога."""
+    ) -> tuple[int, int]:
+        """Потоковая обработка и импорт снимка каталога.
+
+        Args:
+            stream: Поток байт входного снимка.
+
+        Returns:
+            Кортеж (imported_count, dropped_count).
+        """
         raise NotImplementedError
 
     async def get_stats(self) -> ShowcaseStats:
-        """Получить текущую сводку статистики."""
+        """Получить текущую сводку статистики.
+
+        Returns:
+            Экземпляр ShowcaseStats.
+        """
         raise NotImplementedError

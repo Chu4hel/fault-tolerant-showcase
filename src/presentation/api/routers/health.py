@@ -18,5 +18,8 @@ async def check_health() -> HealthResponse:
     """Возвращает статус здоровья сервиса.
 
     Должен отвечать 200 сразу после старта процесса и все время работы.
+
+    Returns:
+        Объект HealthResponse со статусом "healthy".
     """
     return HealthResponse()

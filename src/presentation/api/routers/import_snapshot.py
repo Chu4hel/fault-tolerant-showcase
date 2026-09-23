@@ -15,5 +15,12 @@ class ImportResponse(BaseModel):
 
 @router.post("/import", response_model=ImportResponse)
 async def import_snapshot(request: Request) -> ImportResponse:
-    """Прием полного снимка каталога через потоковую обработку тела."""
+    """Прием полного снимка каталога через потоковую обработку тела.
+
+    Args:
+        request: HTTP-запрос FastAPI с потоком данных.
+
+    Returns:
+        Сводка импорта ImportResponse с количеством imported и dropped.
+    """
     raise NotImplementedError

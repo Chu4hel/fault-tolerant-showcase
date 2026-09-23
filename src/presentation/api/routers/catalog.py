@@ -22,17 +22,39 @@ class DeleteResponse(BaseModel):
 
 @router.post("/source", response_model=SourceResponse)
 async def set_source(payload: SourceConfigPayload) -> SourceResponse:
-    """Установка или обновление адреса каталога."""
+    """Установка или обновление адреса каталога.
+
+    Args:
+        payload: Модель с адресом каталога.
+
+    Returns:
+        Объект SourceResponse с подтвержденным адресом источника.
+    """
     raise NotImplementedError
 
 
 @router.put("/{quote_id}", response_model=Quote)
 async def upsert_quote(quote_id: str, payload: QuoteUpsertPayload) -> Quote:
-    """Добавление или замена цитаты редакцией через витрину."""
+    """Добавление или замена цитаты редакцией через витрину.
+
+    Args:
+        quote_id: Идентификатор цитаты.
+        payload: Данные автора и текста цитаты.
+
+    Returns:
+        Созданная или обновленная цитата Quote.
+    """
     raise NotImplementedError
 
 
 @router.delete("/{quote_id}", response_model=DeleteResponse)
 async def delete_quote(quote_id: str) -> DeleteResponse:
-    """Снятие цитаты с публикации редакцией через витрину."""
+    """Снятие цитаты с публикации редакцией через витрину.
+
+    Args:
+        quote_id: Идентификатор удаляемой цитаты.
+
+    Returns:
+        Подтверждение удаления DeleteResponse.
+    """
     raise NotImplementedError

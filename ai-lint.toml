@@ -1,0 +1,9 @@
+[dependencies]
+# При изменении исходного кода обновлять карту API и семантический индекс
+"src/**/*.py" = ["api_map.md", "project_index.json"]
+
+[rules]
+# Настройки правил ai-lint
+strict = false
+soft_mode = true
+exclude_rules = []
