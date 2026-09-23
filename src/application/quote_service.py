@@ -6,7 +6,6 @@ from src.domain.interfaces.catalog_client import ICatalogClient
 from src.domain.interfaces.quote_storage import IQuoteStorage
 from src.domain.models.quote import Quote, QuoteSource, QuoteUpsertPayload
 from src.domain.models.stats import ShowcaseStats
-from src.infrastructure.storage.memory_storage import MemoryQuoteStorage
 
 
 class QuoteService:
@@ -16,15 +15,18 @@ class QuoteService:
         self,
         storage: IQuoteStorage,
         catalog_client: ICatalogClient,
+        max_age_seconds: float = 60.0,
     ) -> None:
         """Инициализирует сервис витрины цитат.
 
         Args:
             storage: Реализация хранилища цитат (Dependency Inversion).
             catalog_client: Реализация клиента каталога (Dependency Inversion).
+            max_age_seconds: Максимальный возраст данных у читателя (60 с по ТЗ).
         """
         self._storage = storage
         self._catalog_client = catalog_client
+        self._max_age_seconds = max_age_seconds
 
     def set_catalog_source(self, url: str) -> str:
         """Задает или обновляет адрес каталога.
@@ -59,28 +61,35 @@ class QuoteService:
         Returns:
             Кортеж (Quote, QuoteSource) или None, если цитата не найдена.
         """
-        # Если цитата была снята редакцией через DELETE — она скрыта до нового снимка
-        if isinstance(self._storage, MemoryQuoteStorage) and self._storage.is_deleted(quote_id):
+        # 1. Если цитата снята редакцией через DELETE — она скрыта до нового снимка
+        if self._storage.is_deleted(quote_id):
             return None
 
-        # 1. Проверяем локальный кэш витрины
-        cached_quote = await self._storage.get(quote_id)
-        if cached_quote is not None:
-            if isinstance(self._storage, MemoryQuoteStorage):
+        # 2. Проверяем наличие в локальном кэше
+        cached_entry = self._storage.get_cached_with_age(quote_id)
+
+        if cached_entry is not None:
+            cached_quote, age = cached_entry
+            # Если запись свежая (младше 60 секунд) — отдаем локально без каталога
+            if age <= self._max_age_seconds:
                 self._storage.increment_served_local()
-            return cached_quote, QuoteSource.LOCAL
+                return cached_quote, QuoteSource.LOCAL
 
-        # 2. Если в кэше нет — обращаемся в каталог
-        if isinstance(self._storage, MemoryQuoteStorage):
-            self._storage.increment_catalog_reads()
-
+        # 3. Запись отсутствует или старше 60 секунд — обращаемся в каталог
+        self._storage.increment_catalog_reads()
         catalog_quote = await self._catalog_client.fetch_quote(quote_id)
+
         if catalog_quote is not None:
-            # Сохраняем в локальный кэш
+            # Каталог вернул актуальную запись — обновляем локальный кэш
             await self._storage.put(catalog_quote)
-            if isinstance(self._storage, MemoryQuoteStorage):
-                self._storage.increment_served_from_catalog()
+            self._storage.increment_served_from_catalog()
             return catalog_quote, QuoteSource.CATALOG
+
+        # 4. Если каталог недоступен, но у нас есть сохраненная локальная копия
+        if cached_entry is not None:
+            cached_quote, _ = cached_entry
+            self._storage.increment_served_local()
+            return cached_quote, QuoteSource.LOCAL
 
         return None
 

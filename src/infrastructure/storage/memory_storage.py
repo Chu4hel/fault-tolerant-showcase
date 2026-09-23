@@ -14,7 +14,11 @@ from src.domain.models.stats import ShowcaseStats
 class MemoryQuoteStorage(IQuoteStorage):
     """In-memory реализация хранилища цитат с LRU-кэшем и компактным индексом каталога."""
 
-    def __init__(self, max_bytes: int = 64 * 1024 * 1024, max_age_seconds: float = 60.0) -> None:
+    def __init__(
+        self,
+        max_bytes: int = 64 * 1024 * 1024,
+        max_age_seconds: float = 60.0,
+    ) -> None:
         """Инициализирует in-memory хранилище.
 
         Args:
@@ -84,8 +88,25 @@ class MemoryQuoteStorage(IQuoteStorage):
         """Увеличивает счетчик запросов, отправленных в каталог."""
         self._catalog_reads += 1
 
+    def get_cached_with_age(self, quote_id: str) -> tuple[Quote, float] | None:
+        """Получить цитату из локального кэша и ее возраст в секундах.
+
+        Args:
+            quote_id: Идентификатор цитаты.
+
+        Returns:
+            Кортеж (Quote, age_seconds) или None, если запись отсутствует.
+        """
+        if quote_id in self._deleted_ids or quote_id not in self._cache:
+            return None
+
+        quote, cached_at, _ = self._cache[quote_id]
+        age = time.monotonic() - cached_at
+        self._cache.move_to_end(quote_id)
+        return quote, age
+
     async def get(self, quote_id: str) -> Quote | None:
-        """Получить цитату из локального кэша, если она актуальна.
+        """Получить цитату из локального кэша, если она не старше допустимого возраста.
 
         Args:
             quote_id: Идентификатор цитаты.
@@ -93,23 +114,14 @@ class MemoryQuoteStorage(IQuoteStorage):
         Returns:
             Объект Quote или None, если запись отсутствует или устарела.
         """
-        if quote_id in self._deleted_ids:
+        entry = self.get_cached_with_age(quote_id)
+        if entry is None:
             return None
 
-        if quote_id not in self._cache:
+        quote, age = entry
+        if age > self._max_age_seconds:
             return None
 
-        quote, cached_at, size = self._cache[quote_id]
-
-        # Проверка срока свежести (по ТЗ: не дольше 60 секунд)
-        if (time.monotonic() - cached_at) > self._max_age_seconds:
-            # Устаревшая запись вытесняется
-            del self._cache[quote_id]
-            self._current_cache_bytes -= size
-            return None
-
-        # Перемещаем в конец LRU как недавно использованную
-        self._cache.move_to_end(quote_id)
         return quote
 
     async def put(self, quote: Quote) -> None:
@@ -124,7 +136,7 @@ class MemoryQuoteStorage(IQuoteStorage):
         self._deleted_ids.discard(quote_id)
         self._known_catalog_ids.add(quote_id)
 
-        # Вычисляем примерный размер цитаты в байтах
+        # Вычисляем точный размер цитаты в байтах
         serialized = orjson.dumps(quote.model_dump())
         quote_size = len(serialized)
 
@@ -173,6 +185,8 @@ class MemoryQuoteStorage(IQuoteStorage):
         {"quotes":[ на первой строке, затем по одной записи в строке,
         записи разделены запятой в конце строки, ]} на последней.
 
+        Обязательные поля записи: id, author, text.
+
         Args:
             stream: Поток байт входного снимка.
 
@@ -185,6 +199,7 @@ class MemoryQuoteStorage(IQuoteStorage):
         new_ids: set[str] = set()
         buffer = bytearray()
         first_line_checked = False
+        now = time.monotonic()
 
         async for chunk in stream:
             buffer.extend(chunk)
@@ -203,7 +218,6 @@ class MemoryQuoteStorage(IQuoteStorage):
                     if not line.startswith(b'{"quotes":['):
                         raise ValueError("Некорректная заглавная строка снимка каталога")
                     first_line_checked = True
-                    # Если на той же строке после {"quotes":[ что-то есть
                     line = line[len(b'{"quotes":[') :].strip()
                     if not line:
                         continue
@@ -221,10 +235,32 @@ class MemoryQuoteStorage(IQuoteStorage):
 
                 try:
                     record = orjson.loads(line)
-                    if isinstance(record, dict) and "id" in record:
-                        new_ids.add(str(record["id"]))
+                    if (
+                        isinstance(record, dict)
+                        and "id" in record
+                        and "author" in record
+                        and "text" in record
+                    ):
+                        qid = str(record["id"])
+                        new_ids.add(qid)
+
+                        # Кэшируем запись, если есть свободное место в лимите памяти
+                        line_len = len(line)
+                        if (
+                            self._current_cache_bytes + line_len <= self._max_bytes
+                            or qid in self._cache
+                        ):
+                            if qid in self._cache:
+                                _, _, old_sz = self._cache[qid]
+                                self._current_cache_bytes -= old_sz
+
+                            quote = Quote.model_validate(record)
+                            self._cache[qid] = (quote, now, line_len)
+                            self._current_cache_bytes += line_len
                     else:
-                        raise ValueError("Запись снимка не содержит обязательного поля id")
+                        raise ValueError(
+                            "Запись снимка не содержит обязательных полей id/author/text"
+                        )
                 except Exception as err:
                     raise ValueError(f"Ошибка парсинга строки снимка: {err}") from err
 
@@ -236,12 +272,31 @@ class MemoryQuoteStorage(IQuoteStorage):
             if tail != b"]}" and tail:
                 try:
                     record = orjson.loads(tail)
-                    if isinstance(record, dict) and "id" in record:
-                        new_ids.add(str(record["id"]))
+                    if (
+                        isinstance(record, dict)
+                        and "id" in record
+                        and "author" in record
+                        and "text" in record
+                    ):
+                        qid = str(record["id"])
+                        new_ids.add(qid)
+                        line_len = len(tail)
+                        if (
+                            self._current_cache_bytes + line_len <= self._max_bytes
+                            or qid in self._cache
+                        ):
+                            if qid in self._cache:
+                                _, _, old_sz = self._cache[qid]
+                                self._current_cache_bytes -= old_sz
+                            quote = Quote.model_validate(record)
+                            self._cache[qid] = (quote, now, line_len)
+                            self._current_cache_bytes += line_len
+                    else:
+                        raise ValueError(
+                            "Запись снимка не содержит обязательных полей id/author/text"
+                        )
                 except Exception as err:
-                    raise ValueError(
-                        f"Ошибка парсинга завершающего фрагмента снимка: {err}"
-                    ) from err
+                    raise ValueError(f"Ошибка парсинга хвоста снимка: {err}") from err
 
         if not first_line_checked:
             raise ValueError("Пустой или поврежденный снимок")

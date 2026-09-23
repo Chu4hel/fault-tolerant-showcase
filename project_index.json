@@ -50,16 +50,16 @@
                       "tags": [],
                       "custom_metadata": {}
                     },
-                    "line_number": 12,
+                    "line_number": 11,
                     "bases": [],
                     "children": [
                       {
                         "name": "__init__",
                         "type": "method",
                         "layer": "private",
-                        "signature": "(self, storage, catalog_client)",
+                        "signature": "(self, storage, catalog_client, max_age_seconds)",
                         "summary": "Инициализирует сервис витрины цитат.",
-                        "docstring": "Инициализирует сервис витрины цитат.\n\nArgs:\n    storage: Реализация хранилища цитат (Dependency Inversion).\n    catalog_client: Реализация клиента каталога (Dependency Inversion).",
+                        "docstring": "Инициализирует сервис витрины цитат.\n\nArgs:\n    storage: Реализация хранилища цитат (Dependency Inversion).\n    catalog_client: Реализация клиента каталога (Dependency Inversion).\n    max_age_seconds: Максимальный возраст данных у читателя (60 с по ТЗ).",
                         "breadcrumbs": {
                           "is_async": false,
                           "is_thread_safe": false,
@@ -69,7 +69,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 15,
+                        "line_number": 14,
                         "bases": [],
                         "children": []
                       },
@@ -89,7 +89,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 29,
+                        "line_number": 31,
                         "bases": [],
                         "children": []
                       },
@@ -109,7 +109,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 41,
+                        "line_number": 43,
                         "bases": [],
                         "children": []
                       },
@@ -129,7 +129,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 49,
+                        "line_number": 51,
                         "bases": [],
                         "children": []
                       },
@@ -149,7 +149,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 87,
+                        "line_number": 96,
                         "bases": [],
                         "children": []
                       },
@@ -169,7 +169,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 108,
+                        "line_number": 117,
                         "bases": [],
                         "children": []
                       },
@@ -189,7 +189,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 122,
+                        "line_number": 131,
                         "bases": [],
                         "children": []
                       },
@@ -209,7 +209,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 133,
+                        "line_number": 142,
                         "bases": [],
                         "children": []
                       }
@@ -511,6 +511,116 @@
                         ],
                         "children": [
                           {
+                            "name": "is_deleted",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self, quote_id)",
+                            "summary": "Проверить, помечена ли цитата как удаленная редакцией.",
+                            "docstring": "Проверить, помечена ли цитата как удаленная редакцией.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    True, если цитата снята с публикации до следующего снимка.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": true,
+                              "decorators": [
+                                "abstractmethod"
+                              ],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 14,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "get_cached_with_age",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self, quote_id)",
+                            "summary": "Получить цитату и ее возраст из кэша.",
+                            "docstring": "Получить цитату и ее возраст из кэша.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Кортеж (Quote, age_seconds) или None, если запись отсутствует.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": true,
+                              "decorators": [
+                                "abstractmethod"
+                              ],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 26,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "increment_served_local",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Увеличить счетчик локально отданных ответов.",
+                            "docstring": "Увеличить счетчик локально отданных ответов.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": true,
+                              "decorators": [
+                                "abstractmethod"
+                              ],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 38,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "increment_served_from_catalog",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Увеличить счетчик ответов, потребовавших каталог.",
+                            "docstring": "Увеличить счетчик ответов, потребовавших каталог.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": true,
+                              "decorators": [
+                                "abstractmethod"
+                              ],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 43,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "increment_catalog_reads",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Увеличить счетчик запросов в каталог.",
+                            "docstring": "Увеличить счетчик запросов в каталог.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": true,
+                              "decorators": [
+                                "abstractmethod"
+                              ],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 48,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
                             "name": "get",
                             "type": "method",
                             "layer": "internal",
@@ -528,7 +638,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 14,
+                            "line_number": 53,
                             "bases": [],
                             "children": []
                           },
@@ -550,7 +660,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 26,
+                            "line_number": 65,
                             "bases": [],
                             "children": []
                           },
@@ -572,7 +682,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 35,
+                            "line_number": 74,
                             "bases": [],
                             "children": []
                           },
@@ -594,7 +704,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 47,
+                            "line_number": 86,
                             "bases": [],
                             "children": []
                           },
@@ -616,7 +726,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 59,
+                            "line_number": 98,
                             "bases": [],
                             "children": []
                           }
@@ -1042,7 +1152,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 47,
+                            "line_number": 51,
                             "bases": [],
                             "children": []
                           },
@@ -1064,7 +1174,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 56,
+                            "line_number": 60,
                             "bases": [],
                             "children": []
                           },
@@ -1084,7 +1194,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 64,
+                            "line_number": 68,
                             "bases": [],
                             "children": []
                           },
@@ -1104,7 +1214,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 75,
+                            "line_number": 79,
                             "bases": [],
                             "children": []
                           },
@@ -1124,7 +1234,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 79,
+                            "line_number": 83,
                             "bases": [],
                             "children": []
                           },
@@ -1144,7 +1254,27 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 83,
+                            "line_number": 87,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "get_cached_with_age",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self, quote_id)",
+                            "summary": "Получить цитату из локального кэша и ее возраст в секундах.",
+                            "docstring": "Получить цитату из локального кэша и ее возраст в секундах.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Кортеж (Quote, age_seconds) или None, если запись отсутствует.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 91,
                             "bases": [],
                             "children": []
                           },
@@ -1153,8 +1283,8 @@
                             "type": "method",
                             "layer": "internal",
                             "signature": "(self, quote_id)",
-                            "summary": "Получить цитату из локального кэша, если она актуальна.",
-                            "docstring": "Получить цитату из локального кэша, если она актуальна.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Объект Quote или None, если запись отсутствует или устарела.",
+                            "summary": "Получить цитату из локального кэша, если она не старше допустимого возраста.",
+                            "docstring": "Получить цитату из локального кэша, если она не старше допустимого возраста.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Объект Quote или None, если запись отсутствует или устарела.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1164,7 +1294,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 87,
+                            "line_number": 108,
                             "bases": [],
                             "children": []
                           },
@@ -1184,7 +1314,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 115,
+                            "line_number": 127,
                             "bases": [],
                             "children": []
                           },
@@ -1204,7 +1334,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 146,
+                            "line_number": 158,
                             "bases": [],
                             "children": []
                           },
@@ -1214,7 +1344,7 @@
                             "layer": "internal",
                             "signature": "(self, stream)",
                             "summary": "Потоковая обработка и импорт полного снимка каталога.",
-                            "docstring": "Потоковая обработка и импорт полного снимка каталога.\n\nГарантия формата снимка:\n{\"quotes\":[ на первой строке, затем по одной записи в строке,\nзаписи разделены запятой в конце строки, ]} на последней.\n\nArgs:\n    stream: Поток байт входного снимка.\n\nReturns:\n    Кортеж (imported_count, dropped_count).\n\nRaises:\n    ValueError: При некорректном формате данных снимка.",
+                            "docstring": "Потоковая обработка и импорт полного снимка каталога.\n\nГарантия формата снимка:\n{\"quotes\":[ на первой строке, затем по одной записи в строке,\nзаписи разделены запятой в конце строки, ]} на последней.\n\nОбязательные поля записи: id, author, text.\n\nArgs:\n    stream: Поток байт входного снимка.\n\nReturns:\n    Кортеж (imported_count, dropped_count).\n\nRaises:\n    ValueError: При некорректном формате данных снимка.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1224,7 +1354,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 169,
+                            "line_number": 181,
                             "bases": [],
                             "children": []
                           },
@@ -1244,7 +1374,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 271,
+                            "line_number": 326,
                             "bases": [],
                             "children": []
                           }
@@ -1756,8 +1886,8 @@
   "metadata": {
     "chutils_version": "3.8.1",
     "project_version": "0.1.0",
-    "git_commit": "eb0ca50e4ea875f875a9f943203d9fff8da3cfe9 (dirty)",
-    "generated_at": "2026-09-23T15:48:59.121519+00:00",
-    "project_hash": "cbf199f3ed0f2c045abded111de143f4ce701a90e095ced99c669ece248d9b1c"
+    "git_commit": "ea41bbb5f3ff558a73a50569ca760c96676c5da2 (dirty)",
+    "generated_at": "2026-09-23T15:59:14.789782+00:00",
+    "project_hash": "70b6e386f45e6040ab02194c2df82c092780face67c58f9ceee0ea48a0ca564d"
   }
 }

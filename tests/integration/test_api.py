@@ -127,6 +127,21 @@ def test_import_snapshot_and_stats(client: TestClient) -> None:
     imp_data = imp_resp.json()
     assert imp_data["imported"] >= 2
 
+    # Читатель запрашивает цитату из снимка — должна отдаваться мгновенно из LOCAL
+    reader_resp = client.get("/quotes/snap-q-1")
+    assert reader_resp.status_code == 200
+    assert reader_resp.headers.get("X-Source") == "LOCAL"
+    assert reader_resp.json()["author"] == "Сократ"
+
+    # Некорректный снимок без обязательного поля author -> 400
+    invalid_snap = '{"quotes":[\n{"id": "bad-1", "text": "Без автора"}\n]}'
+    bad_resp = client.post(
+        "/import",
+        content=invalid_snap.encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+    )
+    assert bad_resp.status_code == 400
+
     # Проверка /stats
     stats_resp = client.get("/stats")
     assert stats_resp.status_code == 200
