@@ -1,0 +1,18 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# chutils
+config.local.yml
+config.local.yaml
+config.local.ini
+config.local.json
+*.log
+logs/

@@ -1,0 +1,7 @@
+# Конфигурация проекта Project
+
+app_host: "0.0.0.0"
+app_port: 8000
+max_cache_bytes: 125829120
+quote_read_timeout_seconds: 3.0
+quote_max_age_seconds: 60.0
