@@ -817,8 +817,8 @@
                         "type": "class",
                         "layer": "internal",
                         "signature": "",
-                        "summary": "In-memory реализация хранилища цитат с поддержкой LRU-вытеснения.",
-                        "docstring": "In-memory реализация хранилища цитат с поддержкой LRU-вытеснения.",
+                        "summary": "In-memory реализация хранилища цитат с LRU-кэшем и компактным индексом каталога.",
+                        "docstring": "In-memory реализация хранилища цитат с LRU-кэшем и компактным индексом каталога.",
                         "breadcrumbs": {
                           "is_async": false,
                           "is_thread_safe": false,
@@ -828,7 +828,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 10,
+                        "line_number": 14,
                         "bases": [
                           "src.domain.interfaces.quote_storage.IQuoteStorage"
                         ],
@@ -837,9 +837,9 @@
                             "name": "__init__",
                             "type": "method",
                             "layer": "private",
-                            "signature": "(self, max_bytes)",
+                            "signature": "(self, max_bytes, max_age_seconds)",
                             "summary": "Инициализирует in-memory хранилище.",
-                            "docstring": "Инициализирует in-memory хранилище.\n\nArgs:\n    max_bytes: Максимальный лимит байтов под локальный кэш цитат.",
+                            "docstring": "Инициализирует in-memory хранилище.\n\nArgs:\n    max_bytes: Максимальный лимит байтов под локальный кэш цитат.\n    max_age_seconds: Максимальный возраст актуальности кэшированной цитаты (60 с).",
                             "breadcrumbs": {
                               "is_async": false,
                               "is_thread_safe": false,
@@ -849,7 +849,131 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 13,
+                            "line_number": 17,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "known_catalog_ids",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Возвращает множество известных ID цитат в каталоге.",
+                            "docstring": "Возвращает множество известных ID цитат в каталоге.\n\nReturns:\n    Множество строк с идентификаторами цитат.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [
+                                "property"
+                              ],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 47,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "deleted_ids",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Возвращает множество удаленных редакцией ID цитат.",
+                            "docstring": "Возвращает множество удаленных редакцией ID цитат.\n\nReturns:\n    Множество строк с идентификаторами цитат.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [
+                                "property"
+                              ],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 56,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "is_deleted",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self, quote_id)",
+                            "summary": "Проверяет, помечена ли цитата как удаленная редакцией.",
+                            "docstring": "Проверяет, помечена ли цитата как удаленная редакцией.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    True, если цитата снята с публикации до следующего снимка.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 64,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "increment_served_local",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Увеличивает счетчик ответов, отданных локально.",
+                            "docstring": "Увеличивает счетчик ответов, отданных локально.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 75,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "increment_served_from_catalog",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Увеличивает счетчик ответов, потребовавших обращения в каталог.",
+                            "docstring": "Увеличивает счетчик ответов, потребовавших обращения в каталог.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 79,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "increment_catalog_reads",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Увеличивает счетчик запросов, отправленных в каталог.",
+                            "docstring": "Увеличивает счетчик запросов, отправленных в каталог.",
+                            "breadcrumbs": {
+                              "is_async": false,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 83,
                             "bases": [],
                             "children": []
                           },
@@ -858,8 +982,8 @@
                             "type": "method",
                             "layer": "internal",
                             "signature": "(self, quote_id)",
-                            "summary": "Получить цитату из локального кэша.",
-                            "docstring": "Получить цитату из локального кэша.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Объект Quote или None, если запись отсутствует в кэше.",
+                            "summary": "Получить цитату из локального кэша, если она актуальна.",
+                            "docstring": "Получить цитату из локального кэша, если она актуальна.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Объект Quote или None, если запись отсутствует или устарела.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -869,7 +993,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 21,
+                            "line_number": 87,
                             "bases": [],
                             "children": []
                           },
@@ -878,8 +1002,8 @@
                             "type": "method",
                             "layer": "internal",
                             "signature": "(self, quote)",
-                            "summary": "Сохранить или обновить цитату в локальном кэше.",
-                            "docstring": "Сохранить или обновить цитату в локальном кэше.\n\nArgs:\n    quote: Объект цитаты.",
+                            "summary": "Сохранить или обновить цитату в локальном кэше с контролем объема памяти.",
+                            "docstring": "Сохранить или обновить цитату в локальном кэше с контролем объема памяти.\n\nArgs:\n    quote: Объект цитаты для сохранения.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -889,7 +1013,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 32,
+                            "line_number": 115,
                             "bases": [],
                             "children": []
                           },
@@ -898,8 +1022,8 @@
                             "type": "method",
                             "layer": "internal",
                             "signature": "(self, quote_id)",
-                            "summary": "Удалить цитату из локального кэша и пометить как снятую.",
-                            "docstring": "Удалить цитату из локального кэша и пометить как снятую.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    True, если цитата была удалена, иначе False.",
+                            "summary": "Удалить цитату из локального кэша и пометить как снятую с публикации.",
+                            "docstring": "Удалить цитату из локального кэша и пометить как снятую с публикации.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    True, если цитата присутствовала в каталоге или кэше, иначе False.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -909,7 +1033,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 40,
+                            "line_number": 146,
                             "bases": [],
                             "children": []
                           },
@@ -918,8 +1042,8 @@
                             "type": "method",
                             "layer": "internal",
                             "signature": "(self, stream)",
-                            "summary": "Потоковая обработка и импорт снимка каталога.",
-                            "docstring": "Потоковая обработка и импорт снимка каталога.\n\nArgs:\n    stream: Поток байт входного снимка.\n\nReturns:\n    Кортеж (imported_count, dropped_count).",
+                            "summary": "Потоковая обработка и импорт полного снимка каталога.",
+                            "docstring": "Потоковая обработка и импорт полного снимка каталога.\n\nГарантия формата снимка:\n{\"quotes\":[ на первой строке, затем по одной записи в строке,\nзаписи разделены запятой в конце строки, ]} на последней.\n\nArgs:\n    stream: Поток байт входного снимка.\n\nReturns:\n    Кортеж (imported_count, dropped_count).\n\nRaises:\n    ValueError: При некорректном формате данных снимка.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -929,7 +1053,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 51,
+                            "line_number": 169,
                             "bases": [],
                             "children": []
                           },
@@ -939,7 +1063,7 @@
                             "layer": "internal",
                             "signature": "(self)",
                             "summary": "Получить текущую сводку статистики.",
-                            "docstring": "Получить текущую сводку статистики.\n\nReturns:\n    Экземпляр ShowcaseStats.",
+                            "docstring": "Получить текущую сводку статистики.\n\nReturns:\n    Экземпляр ShowcaseStats с актуальными метриками.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -949,7 +1073,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 62,
+                            "line_number": 271,
                             "bases": [],
                             "children": []
                           }
@@ -1461,8 +1585,8 @@
   "metadata": {
     "chutils_version": "3.8.1",
     "project_version": "0.1.0",
-    "git_commit": "177d7b4138feb0703becbe7d07f20a8a5036dfce (dirty)",
-    "generated_at": "2026-09-23T15:40:30.198575+00:00",
-    "project_hash": "b3126135691dfd005214cc358c23e7c0dff07cdee3e0e86535267d92f6879e44"
+    "git_commit": "1e96d502fa6ec87f52085363daa5be6a94c4ba52 (dirty)",
+    "generated_at": "2026-09-23T15:45:28.341519+00:00",
+    "project_hash": "789e3ac2e64a4e39a6ad1c0a17b24e613661883ed4f98f103b9cb60171c44961"
   }
 }
