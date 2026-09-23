@@ -78,6 +78,10 @@ class HttpCatalogClient(ICatalogClient):
             self._client = AsyncWebClient(
                 timeout=httpx.Timeout(self._timeout_seconds),
                 limits=httpx.Limits(max_keepalive_connections=32, max_connections=64),
+                rotate_proxy=False,
+                rotate_ua=False,
+                trust_env=False,
+                retry_on_5xx=False,
             )
         return self._client
 
@@ -166,7 +170,7 @@ class HttpCatalogClient(ICatalogClient):
         except (CircuitBreakerOpenError, BulkheadLimitExceeded) as exc:
             logger.warning(f"Защита каталога активна ({type(exc).__name__}): запрос заблокирован")
             return None
-        except (httpx.TimeoutException, httpx.NetworkError) as err:
+        except (httpx.TimeoutException, httpx.NetworkError, httpx.HTTPStatusError) as err:
             self._busy_until = time.monotonic() + 2.0
             logger.error(
                 f"Сетевой сбой при обращении к каталогу ({type(err).__name__}). Backoff 2 с"
