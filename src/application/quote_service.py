@@ -6,6 +6,7 @@ from src.domain.interfaces.catalog_client import ICatalogClient
 from src.domain.interfaces.quote_storage import IQuoteStorage
 from src.domain.models.quote import Quote, QuoteSource, QuoteUpsertPayload
 from src.domain.models.stats import ShowcaseStats
+from src.infrastructure.logging import logger
 
 
 class QuoteService:
@@ -112,6 +113,7 @@ class QuoteService:
             text=payload.text,
         )
         await self._storage.put(quote)
+        logger.info(f"Цитата {quote_id} сохранена редакцией")
         return quote
 
     async def delete_quote(self, quote_id: str) -> bool:
@@ -126,7 +128,10 @@ class QuoteService:
         Returns:
             True, если цитата была найдена и снята с публикации, иначе False.
         """
-        return await self._storage.delete(quote_id)
+        deleted = await self._storage.delete(quote_id)
+        if deleted:
+            logger.info(f"Цитата {quote_id} снята с публикации редакцией")
+        return deleted
 
     async def import_snapshot(self, stream: AsyncIterator[bytes]) -> tuple[int, int]:
         """Принять и обработать полный снимок каталога.
@@ -137,7 +142,9 @@ class QuoteService:
         Returns:
             Кортеж (imported_count, dropped_count).
         """
-        return await self._storage.import_snapshot_stream(stream)
+        imported, dropped = await self._storage.import_snapshot_stream(stream)
+        logger.info(f"Снимок каталога обработан: imported={imported}, dropped={dropped}")
+        return imported, dropped
 
     async def get_stats(self) -> ShowcaseStats:
         """Получить актуальную статистику витрины.

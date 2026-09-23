@@ -50,7 +50,7 @@
                       "tags": [],
                       "custom_metadata": {}
                     },
-                    "line_number": 11,
+                    "line_number": 12,
                     "bases": [],
                     "children": [
                       {
@@ -69,7 +69,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 14,
+                        "line_number": 15,
                         "bases": [],
                         "children": []
                       },
@@ -89,7 +89,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 31,
+                        "line_number": 32,
                         "bases": [],
                         "children": []
                       },
@@ -109,7 +109,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 43,
+                        "line_number": 44,
                         "bases": [],
                         "children": []
                       },
@@ -129,7 +129,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 51,
+                        "line_number": 52,
                         "bases": [],
                         "children": []
                       },
@@ -149,7 +149,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 96,
+                        "line_number": 97,
                         "bases": [],
                         "children": []
                       },
@@ -169,7 +169,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 117,
+                        "line_number": 119,
                         "bases": [],
                         "children": []
                       },
@@ -189,7 +189,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 131,
+                        "line_number": 136,
                         "bases": [],
                         "children": []
                       },
@@ -209,7 +209,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 142,
+                        "line_number": 149,
                         "bases": [],
                         "children": []
                       }
@@ -245,19 +245,19 @@
                   "tags": [],
                   "custom_metadata": {}
                 },
-                "line_number": 6,
+                "line_number": 7,
                 "bases": [
                   "pydantic.BaseModel"
                 ],
                 "children": []
               },
               {
-                "name": "settings",
-                "type": "constant",
+                "name": "load_settings",
+                "type": "function",
                 "layer": "internal",
-                "signature": null,
-                "summary": "",
-                "docstring": null,
+                "signature": "()",
+                "summary": "Загружает настройки из config.yml через провайдер chutils с валидацией Pydantic.",
+                "docstring": "Загружает настройки из config.yml через провайдер chutils с валидацией Pydantic.\n\nReturns:\n    Экземпляр модели Settings.",
                 "breadcrumbs": {
                   "is_async": false,
                   "is_thread_safe": false,
@@ -267,7 +267,7 @@
                   "tags": [],
                   "custom_metadata": {}
                 },
-                "line_number": 24,
+                "line_number": 25,
                 "bases": [],
                 "children": []
               }
@@ -278,17 +278,17 @@
             "path": "src/dependencies",
             "type": "module",
             "layer": "internal",
-            "summary": "Зависимости приложения и внедрение сервисов (Dependency Injection).",
-            "docstring": "Зависимости приложения и внедрение сервисов (Dependency Injection).",
+            "summary": "Зависимости приложения и внедрение сервисов через контейнер chutils.",
+            "docstring": "Зависимости приложения и внедрение сервисов через контейнер chutils.",
             "children": [],
             "symbols": [
               {
-                "name": "storage_instance",
-                "type": "constant",
+                "name": "create_quote_storage",
+                "type": "function",
                 "layer": "internal",
-                "signature": null,
-                "summary": "",
-                "docstring": null,
+                "signature": "()",
+                "summary": "Создает экземпляр хранилища цитат.",
+                "docstring": "Создает экземпляр хранилища цитат.\n\nReturns:\n    Экземпляр хранилища цитат в памяти.",
                 "breadcrumbs": {
                   "is_async": false,
                   "is_thread_safe": false,
@@ -298,17 +298,17 @@
                   "tags": [],
                   "custom_metadata": {}
                 },
-                "line_number": 8,
+                "line_number": 13,
                 "bases": [],
                 "children": []
               },
               {
-                "name": "catalog_client_instance",
-                "type": "constant",
+                "name": "create_catalog_client",
+                "type": "function",
                 "layer": "internal",
-                "signature": null,
-                "summary": "",
-                "docstring": null,
+                "signature": "()",
+                "summary": "Создает экземпляр HTTP клиента каталога.",
+                "docstring": "Создает экземпляр HTTP клиента каталога.\n\nReturns:\n    Экземпляр клиента удаленного каталога.",
                 "breadcrumbs": {
                   "is_async": false,
                   "is_thread_safe": false,
@@ -318,17 +318,17 @@
                   "tags": [],
                   "custom_metadata": {}
                 },
-                "line_number": 14,
+                "line_number": 25,
                 "bases": [],
                 "children": []
               },
               {
-                "name": "quote_service_instance",
-                "type": "constant",
+                "name": "create_quote_service",
+                "type": "function",
                 "layer": "internal",
-                "signature": null,
-                "summary": "",
-                "docstring": null,
+                "signature": "(storage, catalog_client)",
+                "summary": "Создает экземпляр QuoteService через автовайринг зависимостей.",
+                "docstring": "Создает экземпляр QuoteService через автовайринг зависимостей.\n\nArgs:\n    storage: Хранилище цитат.\n    catalog_client: Клиент для обращения к удаленному каталогу.\n\nReturns:\n    Сконфигурированный экземпляр QuoteService.",
                 "breadcrumbs": {
                   "is_async": false,
                   "is_thread_safe": false,
@@ -338,7 +338,27 @@
                   "tags": [],
                   "custom_metadata": {}
                 },
-                "line_number": 19,
+                "line_number": 36,
+                "bases": [],
+                "children": []
+              },
+              {
+                "name": "setup_container",
+                "type": "function",
+                "layer": "internal",
+                "signature": "()",
+                "summary": "Регистрирует интерфейсы и реализации в DI-контейнере chutils.",
+                "docstring": "Регистрирует интерфейсы и реализации в DI-контейнере chutils.",
+                "breadcrumbs": {
+                  "is_async": false,
+                  "is_thread_safe": false,
+                  "is_heavy": false,
+                  "is_abstract": false,
+                  "decorators": [],
+                  "tags": [],
+                  "custom_metadata": {}
+                },
+                "line_number": 56,
                 "bases": [],
                 "children": []
               },
@@ -347,8 +367,8 @@
                 "type": "function",
                 "layer": "internal",
                 "signature": "()",
-                "summary": "Возвращает глобальный экземпляр QuoteService для внедрения в маршрутизаторы.",
-                "docstring": "Возвращает глобальный экземпляр QuoteService для внедрения в маршрутизаторы.\n\nReturns:\n    Экземпляр QuoteService.",
+                "summary": "Возвращает экземпляр QuoteService из DI-контейнера chutils.",
+                "docstring": "Возвращает экземпляр QuoteService из DI-контейнера chutils.\n\nReturns:\n    Экземпляр QuoteService.",
                 "breadcrumbs": {
                   "is_async": false,
                   "is_thread_safe": false,
@@ -358,7 +378,7 @@
                   "tags": [],
                   "custom_metadata": {}
                 },
-                "line_number": 26,
+                "line_number": 67,
                 "bases": [],
                 "children": []
               }
@@ -927,7 +947,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 21,
+                        "line_number": 22,
                         "bases": [],
                         "children": []
                       },
@@ -947,7 +967,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 35,
+                        "line_number": 36,
                         "bases": [
                           "src.domain.interfaces.catalog_client.ICatalogClient"
                         ],
@@ -968,7 +988,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 38,
+                            "line_number": 39,
                             "bases": [],
                             "children": []
                           },
@@ -988,7 +1008,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 54,
+                            "line_number": 55,
                             "bases": [],
                             "children": []
                           },
@@ -1008,7 +1028,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 62,
+                            "line_number": 63,
                             "bases": [],
                             "children": []
                           },
@@ -1028,7 +1048,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 70,
+                            "line_number": 71,
                             "bases": [],
                             "children": []
                           },
@@ -1048,7 +1068,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 83,
+                            "line_number": 84,
                             "bases": [],
                             "children": []
                           },
@@ -1068,7 +1088,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 89,
+                            "line_number": 90,
                             "bases": [],
                             "children": []
                           },
@@ -1088,7 +1108,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 124,
+                            "line_number": 125,
                             "bases": [],
                             "children": []
                           }
@@ -1098,6 +1118,37 @@
                   }
                 ],
                 "symbols": []
+              },
+              {
+                "name": "logging",
+                "path": "src/infrastructure/logging",
+                "type": "module",
+                "layer": "internal",
+                "summary": "Модуль централизованного логирования на базе chutils.",
+                "docstring": "Модуль централизованного логирования на базе chutils.",
+                "children": [],
+                "symbols": [
+                  {
+                    "name": "logger",
+                    "type": "constant",
+                    "layer": "internal",
+                    "signature": null,
+                    "summary": "",
+                    "docstring": null,
+                    "breadcrumbs": {
+                      "is_async": false,
+                      "is_thread_safe": false,
+                      "is_heavy": false,
+                      "is_abstract": false,
+                      "decorators": [],
+                      "tags": [],
+                      "custom_metadata": {}
+                    },
+                    "line_number": 5,
+                    "bases": [],
+                    "children": []
+                  }
+                ]
               },
               {
                 "name": "storage",
@@ -1900,6 +1951,16 @@
   },
   "dependency_graph": [
     {
+      "source": "src/config",
+      "target": "chutils/get_config",
+      "weight": 1
+    },
+    {
+      "source": "src/dependencies",
+      "target": "chutils/default_container",
+      "weight": 1
+    },
+    {
       "source": "src/infrastructure/catalog_client/http_catalog_client",
       "target": "chutils/BulkheadLimitExceeded",
       "weight": 1
@@ -1923,14 +1984,19 @@
       "source": "src/infrastructure/catalog_client/http_catalog_client",
       "target": "chutils/web/AsyncWebClient",
       "weight": 1
+    },
+    {
+      "source": "src/infrastructure/logging",
+      "target": "chutils/setup_logger",
+      "weight": 1
     }
   ],
   "examples": [],
   "metadata": {
     "chutils_version": "3.8.1",
     "project_version": "0.1.0",
-    "git_commit": "b7cb3cbd654a4674e3f6685255402a3a135fc80e (dirty)",
-    "generated_at": "2026-09-23T16:04:23.220272+00:00",
-    "project_hash": "4ee99c8174cab192f457dd5530001f86badef9cec2630bfcd651a40a230e12a5"
+    "git_commit": "d90e7d186e4aaf2d27b058a1caf193c1fa600358 (dirty)",
+    "generated_at": "2026-09-23T16:25:48.789906+00:00",
+    "project_hash": "418a48f3cc692836ad587f208975e9d038ccc8c10686d1309528d13da8f0e8e2"
   }
 }

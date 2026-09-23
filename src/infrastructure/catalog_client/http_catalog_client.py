@@ -10,6 +10,7 @@ from chutils.web import AsyncWebClient
 
 from src.domain.interfaces.catalog_client import ICatalogClient
 from src.domain.models.quote import Quote
+from src.infrastructure.logging import logger
 
 
 @bulkhead(max_concurrent=16, max_waiting=32, timeout=0.2, fallback=None)  # type: ignore[untyped-decorator]
@@ -158,15 +159,19 @@ class HttpCatalogClient(ICatalogClient):
                     retry_seconds = 1.0
 
                 self._busy_until = time.monotonic() + retry_seconds
+                logger.warning(f"Каталог вернул 503 Busy. Пауза {retry_seconds} сек по Retry-After")
                 return None
 
             return None
-        except (CircuitBreakerOpenError, BulkheadLimitExceeded):
-            # Защита сработала: цепь разомкнута или исчерпан лимит слотов
+        except (CircuitBreakerOpenError, BulkheadLimitExceeded) as exc:
+            logger.warning(f"Защита каталога активна ({type(exc).__name__}): запрос заблокирован")
             return None
-        except (httpx.TimeoutException, httpx.NetworkError):
-            # Каталог упал — пауза 2 секунды дополнительно к Circuit Breaker
+        except (httpx.TimeoutException, httpx.NetworkError) as err:
             self._busy_until = time.monotonic() + 2.0
+            logger.error(
+                f"Сетевой сбой при обращении к каталогу ({type(err).__name__}). Backoff 2 с"
+            )
             return None
-        except Exception:
+        except Exception as exc:
+            logger.error(f"Непредвиденная ошибка при запросе к каталогу: {exc}")
             return None

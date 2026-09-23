@@ -1,5 +1,7 @@
 """Интеграционные тесты для API эндпоинтов витрины цитатника."""
 
+import collections.abc
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -27,6 +29,19 @@ class DummyCatalogClient(ICatalogClient):
     async def fetch_quote(self, quote_id: str) -> Quote | None:
         """Получить цитату из тестового каталога."""
         return self.quotes.get(quote_id)
+
+
+@pytest.fixture(autouse=True)
+def dummy_catalog() -> collections.abc.Generator[DummyCatalogClient, None, None]:
+    """Автоматически подменяет сетевой клиент каталога на мок для изоляции тестов."""
+    from src.dependencies import get_quote_service
+
+    service = get_quote_service()
+    dummy = DummyCatalogClient()
+    saved = service._catalog_client
+    service._catalog_client = dummy
+    yield dummy
+    service._catalog_client = saved
 
 
 @pytest.fixture

@@ -1,5 +1,6 @@
 """Конфигурация приложения и константы."""
 
+from chutils import get_config
 from pydantic import BaseModel, Field
 
 
@@ -16,9 +17,25 @@ class Settings(BaseModel):
 
     app_host: str = "0.0.0.0"
     app_port: int = 8000
-    max_cache_bytes: int = Field(default=120 * 1024 * 1024)
+    max_cache_bytes: int = Field(default=64 * 1024 * 1024)
     quote_read_timeout_seconds: float = 3.0
     quote_max_age_seconds: float = 60.0
 
 
-settings = Settings()
+def load_settings() -> Settings:
+    """Загружает настройки из config.yml через провайдер chutils с валидацией Pydantic.
+
+    Returns:
+        Экземпляр модели Settings.
+    """
+    try:
+        loaded = get_config(model=Settings)
+        if isinstance(loaded, Settings):
+            return loaded
+        return Settings.model_validate(loaded)
+    except Exception:
+        return Settings()
+
+
+settings: Settings = load_settings()
+"""Глобальный объект конфигурации приложения."""

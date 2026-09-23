@@ -1,9 +1,9 @@
 ---
 chutils_version: 3.8.1
 project_version: 0.1.0
-git_commit: b7cb3cbd654a4674e3f6685255402a3a135fc80e (dirty)
-generated_at: 2026-09-23T16:04:22.855069+00:00
-project_hash: 4ee99c8174cab192f457dd5530001f86badef9cec2630bfcd651a40a230e12a5
+git_commit: d90e7d186e4aaf2d27b058a1caf193c1fa600358 (dirty)
+generated_at: 2026-09-23T16:25:17.284471+00:00
+project_hash: 6e00fb77cbd84a2f7c3ebabf93e9e3a19a3bc2d34e1e541300d857df7203989e
 ---
 
 # Public API Map: quote-showcase
@@ -12,11 +12,12 @@ project_hash: 4ee99c8174cab192f457dd5530001f86badef9cec2630bfcd651a40a230e12a5
 |:-----------------------------------------------------------------------------------------|:---------|:--------------------------------|:---------------------------------------------------------------------------------------|
 | `quote-showcase.src.application.quote_service.QuoteService`                              | class    |                                 | Сервис для координации работы с кэшем, каталогом и метриками.                          |
 | `quote-showcase.src.config.Settings`                                                     | class    |                                 | Настройки сервиса витрины цитатника.                                                   |
-| `quote-showcase.src.config.settings`                                                     | constant |                                 |                                                                                        |
-| `quote-showcase.src.dependencies.catalog_client_instance`                                | constant |                                 |                                                                                        |
-| `quote-showcase.src.dependencies.get_quote_service`                                      | function | `()`                            | Возвращает глобальный экземпляр QuoteService для внедрения в маршрутизаторы.           |
-| `quote-showcase.src.dependencies.quote_service_instance`                                 | constant |                                 |                                                                                        |
-| `quote-showcase.src.dependencies.storage_instance`                                       | constant |                                 |                                                                                        |
+| `quote-showcase.src.config.load_settings`                                                | function | `()`                            | Загружает настройки из config.yml через провайдер chutils с валидацией Pydantic.       |
+| `quote-showcase.src.dependencies.create_catalog_client`                                  | function | `()`                            | Создает экземпляр HTTP клиента каталога.                                               |
+| `quote-showcase.src.dependencies.create_quote_service`                                   | function | `(storage, catalog_client)`     | Создает экземпляр QuoteService через автовайринг зависимостей.                         |
+| `quote-showcase.src.dependencies.create_quote_storage`                                   | function | `()`                            | Создает экземпляр хранилища цитат.                                                     |
+| `quote-showcase.src.dependencies.get_quote_service`                                      | function | `()`                            | Возвращает экземпляр QuoteService из DI-контейнера chutils.                            |
+| `quote-showcase.src.dependencies.setup_container`                                        | function | `()`                            | Регистрирует интерфейсы и реализации в DI-контейнере chutils.                          |
 | `quote-showcase.src.domain.interfaces.catalog_client.ICatalogClient`                     | class    |                                 | Абстрактный интерфейс взаимодействия с каталогом цитат.                                |
 | `quote-showcase.src.domain.interfaces.quote_storage.IQuoteStorage`                       | class    |                                 | Абстрактный интерфейс in-memory хранилища цитат.                                       |
 | `quote-showcase.src.domain.models.quote.Quote`                                           | class    |                                 | Модель цитаты.                                                                         |
@@ -25,6 +26,7 @@ project_hash: 4ee99c8174cab192f457dd5530001f86badef9cec2630bfcd651a40a230e12a5
 | `quote-showcase.src.domain.models.quote.SourceConfigPayload`                             | class    |                                 | Полезная нагрузка для задания адреса каталога.                                         |
 | `quote-showcase.src.domain.models.stats.ShowcaseStats`                                   | class    |                                 | Эксплуатационная сводка сервиса.                                                       |
 | `quote-showcase.src.infrastructure.catalog_client.http_catalog_client.HttpCatalogClient` | class    |                                 | Асинхронный HTTP-клиент каталога с Circuit Breaker, Bulkhead и поддержкой Retry-After. |
+| `quote-showcase.src.infrastructure.logging.logger`                                       | constant |                                 |                                                                                        |
 | `quote-showcase.src.infrastructure.storage.memory_storage.MemoryQuoteStorage`            | class    |                                 | In-memory реализация хранилища цитат с LRU-кэшем и компактным индексом каталога.       |
 | `quote-showcase.src.main.app`                                                            | constant |                                 |                                                                                        |
 | `quote-showcase.src.main.create_app`                                                     | function | `()`                            | Создает и настраивает экземпляр приложения FastAPI.                                    |
