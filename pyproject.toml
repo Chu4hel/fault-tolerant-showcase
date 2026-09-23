@@ -36,6 +36,9 @@ select = [
     "SIM",    # flake8-simplify
 ]
 
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.params.Depends"]
+
 [tool.mypy]
 python_version = "3.11"
 strict = true

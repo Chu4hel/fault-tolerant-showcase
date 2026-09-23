@@ -39,8 +39,8 @@
                     "type": "class",
                     "layer": "internal",
                     "signature": "",
-                    "summary": "Сервис для работы с цитатами, каталогом и статистикой.",
-                    "docstring": "Сервис для работы с цитатами, каталогом и статистикой.",
+                    "summary": "Сервис для координации работы с кэшем, каталогом и метриками.",
+                    "docstring": "Сервис для координации работы с кэшем, каталогом и метриками.",
                     "breadcrumbs": {
                       "is_async": false,
                       "is_thread_safe": false,
@@ -50,7 +50,7 @@
                       "tags": [],
                       "custom_metadata": {}
                     },
-                    "line_number": 11,
+                    "line_number": 12,
                     "bases": [],
                     "children": [
                       {
@@ -69,7 +69,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 14,
+                        "line_number": 15,
                         "bases": [],
                         "children": []
                       },
@@ -89,7 +89,27 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 28,
+                        "line_number": 29,
+                        "bases": [],
+                        "children": []
+                      },
+                      {
+                        "name": "get_catalog_source",
+                        "type": "method",
+                        "layer": "internal",
+                        "signature": "(self)",
+                        "summary": "Возвращает текущий адрес каталога.",
+                        "docstring": "Возвращает текущий адрес каталога.\n\nReturns:\n    Строка URL или None.",
+                        "breadcrumbs": {
+                          "is_async": false,
+                          "is_thread_safe": false,
+                          "is_heavy": false,
+                          "is_abstract": false,
+                          "decorators": [],
+                          "tags": [],
+                          "custom_metadata": {}
+                        },
+                        "line_number": 41,
                         "bases": [],
                         "children": []
                       },
@@ -98,8 +118,8 @@
                         "type": "method",
                         "layer": "internal",
                         "signature": "(self, quote_id)",
-                        "summary": "Получить цитату для читателя с указанием источника (LOCAL / CATALOG).",
-                        "docstring": "Получить цитату для читателя с указанием источника (LOCAL / CATALOG).\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Кортеж (Quote, QuoteSource) или None, если цитата не найдена.",
+                        "summary": "Получить цитату для читателя с фиксацией источника (LOCAL / CATALOG).",
+                        "docstring": "Получить цитату для читателя с фиксацией источника (LOCAL / CATALOG).\n\nЕсли цитаты нет ни у витрины, ни в каталоге — возвращает None.\nЧто цитаты нет, витрина не запоминает: редакция заводит их постоянно,\nи читатель, пришедший по свежей ссылке, обязан увидеть цитату сразу.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Кортеж (Quote, QuoteSource) или None, если цитата не найдена.",
                         "breadcrumbs": {
                           "is_async": true,
                           "is_thread_safe": false,
@@ -109,7 +129,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 40,
+                        "line_number": 49,
                         "bases": [],
                         "children": []
                       },
@@ -119,7 +139,7 @@
                         "layer": "internal",
                         "signature": "(self, quote_id, payload)",
                         "summary": "Добавить или обновить цитату редакцией.",
-                        "docstring": "Добавить или обновить цитату редакцией.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n    payload: Данные цитаты от редакции.\n\nReturns:\n    Актуализированный объект Quote.",
+                        "docstring": "Добавить или обновить цитату редакцией.\n\nЗапись актуальна по определению: читателю она отдается сразу после ответа\nи перечитывать ее из каталога не нужно.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n    payload: Данные автора и текста цитаты от редакции.\n\nReturns:\n    Созданный или обновленный объект Quote.",
                         "breadcrumbs": {
                           "is_async": true,
                           "is_thread_safe": false,
@@ -129,7 +149,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 51,
+                        "line_number": 87,
                         "bases": [],
                         "children": []
                       },
@@ -138,8 +158,8 @@
                         "type": "method",
                         "layer": "internal",
                         "signature": "(self, quote_id)",
-                        "summary": "Снять цитату с публикации редакцией.",
-                        "docstring": "Снять цитату с публикации редакцией.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    True, если цитата снята с публикации, иначе False.",
+                        "summary": "Снять цитату с публикации редакцией через витрину.",
+                        "docstring": "Снять цитату с публикации редакцией через витрину.\n\nСнятая цитата читателям не отдается, даже если в каталоге она еще есть,\nдо следующего снимка.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    True, если цитата была найдена и снята с публикации, иначе False.",
                         "breadcrumbs": {
                           "is_async": true,
                           "is_thread_safe": false,
@@ -149,7 +169,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 63,
+                        "line_number": 108,
                         "bases": [],
                         "children": []
                       },
@@ -169,7 +189,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 74,
+                        "line_number": 122,
                         "bases": [],
                         "children": []
                       },
@@ -189,7 +209,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 85,
+                        "line_number": 133,
                         "bases": [],
                         "children": []
                       }
@@ -248,6 +268,97 @@
                   "custom_metadata": {}
                 },
                 "line_number": 24,
+                "bases": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "dependencies",
+            "path": "src/dependencies",
+            "type": "module",
+            "layer": "internal",
+            "summary": "Зависимости приложения и внедрение сервисов (Dependency Injection).",
+            "docstring": "Зависимости приложения и внедрение сервисов (Dependency Injection).",
+            "children": [],
+            "symbols": [
+              {
+                "name": "storage_instance",
+                "type": "constant",
+                "layer": "internal",
+                "signature": null,
+                "summary": "",
+                "docstring": null,
+                "breadcrumbs": {
+                  "is_async": false,
+                  "is_thread_safe": false,
+                  "is_heavy": false,
+                  "is_abstract": false,
+                  "decorators": [],
+                  "tags": [],
+                  "custom_metadata": {}
+                },
+                "line_number": 8,
+                "bases": [],
+                "children": []
+              },
+              {
+                "name": "catalog_client_instance",
+                "type": "constant",
+                "layer": "internal",
+                "signature": null,
+                "summary": "",
+                "docstring": null,
+                "breadcrumbs": {
+                  "is_async": false,
+                  "is_thread_safe": false,
+                  "is_heavy": false,
+                  "is_abstract": false,
+                  "decorators": [],
+                  "tags": [],
+                  "custom_metadata": {}
+                },
+                "line_number": 14,
+                "bases": [],
+                "children": []
+              },
+              {
+                "name": "quote_service_instance",
+                "type": "constant",
+                "layer": "internal",
+                "signature": null,
+                "summary": "",
+                "docstring": null,
+                "breadcrumbs": {
+                  "is_async": false,
+                  "is_thread_safe": false,
+                  "is_heavy": false,
+                  "is_abstract": false,
+                  "decorators": [],
+                  "tags": [],
+                  "custom_metadata": {}
+                },
+                "line_number": 19,
+                "bases": [],
+                "children": []
+              },
+              {
+                "name": "get_quote_service",
+                "type": "function",
+                "layer": "internal",
+                "signature": "()",
+                "summary": "Возвращает глобальный экземпляр QuoteService для внедрения в маршрутизаторы.",
+                "docstring": "Возвращает глобальный экземпляр QuoteService для внедрения в маршрутизаторы.\n\nReturns:\n    Экземпляр QuoteService.",
+                "breadcrumbs": {
+                  "is_async": false,
+                  "is_thread_safe": false,
+                  "is_heavy": false,
+                  "is_abstract": false,
+                  "decorators": [],
+                  "tags": [],
+                  "custom_metadata": {}
+                },
+                "line_number": 26,
                 "bases": [],
                 "children": []
               }
@@ -692,8 +803,8 @@
                         "type": "class",
                         "layer": "internal",
                         "signature": "",
-                        "summary": "Асинхронный HTTP-клиент каталога с поддержкой Retry-After.",
-                        "docstring": "Асинхронный HTTP-клиент каталога с поддержкой Retry-After.",
+                        "summary": "Асинхронный HTTP-клиент каталога с защитой от перегрузки и поддержкой Retry-After.",
+                        "docstring": "Асинхронный HTTP-клиент каталога с защитой от перегрузки и поддержкой Retry-After.",
                         "breadcrumbs": {
                           "is_async": false,
                           "is_thread_safe": false,
@@ -703,7 +814,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 9,
+                        "line_number": 13,
                         "bases": [
                           "src.domain.interfaces.catalog_client.ICatalogClient"
                         ],
@@ -714,7 +825,7 @@
                             "layer": "private",
                             "signature": "(self, timeout_seconds)",
                             "summary": "Инициализирует HTTP-клиент каталога.",
-                            "docstring": "Инициализирует HTTP-клиент каталога.\n\nArgs:\n    timeout_seconds: Таймаут на запрос к каталогу.",
+                            "docstring": "Инициализирует HTTP-клиент каталога.\n\nArgs:\n    timeout_seconds: Таймаут на запрос к каталогу (по ТЗ читатель ждет до 3 сек).",
                             "breadcrumbs": {
                               "is_async": false,
                               "is_thread_safe": false,
@@ -724,7 +835,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 12,
+                            "line_number": 16,
                             "bases": [],
                             "children": []
                           },
@@ -733,8 +844,8 @@
                             "type": "method",
                             "layer": "internal",
                             "signature": "(self, url)",
-                            "summary": "Устанавливает или обновляет URL каталога.",
-                            "docstring": "Устанавливает или обновляет URL каталога.\n\nArgs:\n    url: URL каталога.",
+                            "summary": "Устанавливает или обновляет базовый URL каталога.",
+                            "docstring": "Устанавливает или обновляет базовый URL каталога.\n\nArgs:\n    url: URL каталога.",
                             "breadcrumbs": {
                               "is_async": false,
                               "is_thread_safe": false,
@@ -744,7 +855,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 22,
+                            "line_number": 32,
                             "bases": [],
                             "children": []
                           },
@@ -764,17 +875,17 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 30,
+                            "line_number": 40,
                             "bases": [],
                             "children": []
                           },
                           {
-                            "name": "fetch_quote",
+                            "name": "_get_client",
                             "type": "method",
-                            "layer": "internal",
-                            "signature": "(self, quote_id)",
-                            "summary": "Запрашивает цитату из внешнего каталога.",
-                            "docstring": "Запрашивает цитату из внешнего каталога.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Экземпляр Quote, если найден, иначе None.",
+                            "layer": "private",
+                            "signature": "(self)",
+                            "summary": "Ленивая инициализация пула HTTP-клиента.",
+                            "docstring": "Ленивая инициализация пула HTTP-клиента.\n\nReturns:\n    Экземпляр AsyncWebClient.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -784,7 +895,67 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 38,
+                            "line_number": 48,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "close",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self)",
+                            "summary": "Закрывает базовый пул HTTP-соединений.",
+                            "docstring": "Закрывает базовый пул HTTP-соединений.",
+                            "breadcrumbs": {
+                              "is_async": true,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 61,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "fetch_quote",
+                            "type": "method",
+                            "layer": "internal",
+                            "signature": "(self, quote_id)",
+                            "summary": "Запрашивает цитату из внешнего каталога с дедупликацией и защитой от перегрузки.",
+                            "docstring": "Запрашивает цитату из внешнего каталога с дедупликацией и защитой от перегрузки.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Экземпляр Quote, если найден (200), либо None при 404, 503 или недоступности.",
+                            "breadcrumbs": {
+                              "is_async": true,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 67,
+                            "bases": [],
+                            "children": []
+                          },
+                          {
+                            "name": "_execute_request",
+                            "type": "method",
+                            "layer": "private",
+                            "signature": "(self, quote_id)",
+                            "summary": "Выполняет реальный сетевой запрос к каталогу.",
+                            "docstring": "Выполняет реальный сетевой запрос к каталогу.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Объект Quote или None.",
+                            "breadcrumbs": {
+                              "is_async": true,
+                              "is_thread_safe": false,
+                              "is_heavy": false,
+                              "is_abstract": false,
+                              "decorators": [],
+                              "tags": [],
+                              "custom_metadata": {}
+                            },
+                            "line_number": 102,
                             "bases": [],
                             "children": []
                           }
@@ -1187,7 +1358,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 8,
+                            "line_number": 10,
                             "bases": [],
                             "children": []
                           },
@@ -1207,7 +1378,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 11,
+                            "line_number": 13,
                             "bases": [
                               "pydantic.BaseModel"
                             ],
@@ -1229,7 +1400,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 17,
+                            "line_number": 19,
                             "bases": [
                               "pydantic.BaseModel"
                             ],
@@ -1239,9 +1410,9 @@
                             "name": "set_source",
                             "type": "function",
                             "layer": "internal",
-                            "signature": "(payload)",
+                            "signature": "(payload, service)",
                             "summary": "Установка или обновление адреса каталога.",
-                            "docstring": "Установка или обновление адреса каталога.\n\nArgs:\n    payload: Модель с адресом каталога.\n\nReturns:\n    Объект SourceResponse с подтвержденным адресом источника.",
+                            "docstring": "Установка или обновление адреса каталога.\n\nArgs:\n    payload: Модель с адресом каталога.\n    service: Сервис витрины цитат.\n\nReturns:\n    Объект SourceResponse с подтвержденным адресом источника.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1253,7 +1424,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 24,
+                            "line_number": 26,
                             "bases": [],
                             "children": []
                           },
@@ -1261,9 +1432,9 @@
                             "name": "upsert_quote",
                             "type": "function",
                             "layer": "internal",
-                            "signature": "(quote_id, payload)",
+                            "signature": "(quote_id, payload, service)",
                             "summary": "Добавление или замена цитаты редакцией через витрину.",
-                            "docstring": "Добавление или замена цитаты редакцией через витрину.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n    payload: Данные автора и текста цитаты.\n\nReturns:\n    Созданная или обновленная цитата Quote.",
+                            "docstring": "Добавление или замена цитаты редакцией через витрину.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n    payload: Данные автора и текста цитаты.\n    service: Сервис витрины цитат.\n\nReturns:\n    Созданная или обновленная цитата Quote.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1275,7 +1446,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 37,
+                            "line_number": 44,
                             "bases": [],
                             "children": []
                           },
@@ -1283,9 +1454,9 @@
                             "name": "delete_quote",
                             "type": "function",
                             "layer": "internal",
-                            "signature": "(quote_id)",
+                            "signature": "(quote_id, service)",
                             "summary": "Снятие цитаты с публикации редакцией через витрину.",
-                            "docstring": "Снятие цитаты с публикации редакцией через витрину.\n\nArgs:\n    quote_id: Идентификатор удаляемой цитаты.\n\nReturns:\n    Подтверждение удаления DeleteResponse.",
+                            "docstring": "Снятие цитаты с публикации редакцией через витрину.\n\nArgs:\n    quote_id: Идентификатор удаляемой цитаты.\n    service: Сервис витрины цитат.\n\nReturns:\n    Подтверждение удаления DeleteResponse.\n\nRaises:\n    HTTPException: 404, если цитата не найдена.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1297,7 +1468,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 51,
+                            "line_number": 63,
                             "bases": [],
                             "children": []
                           }
@@ -1403,7 +1574,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 6,
+                            "line_number": 9,
                             "bases": [],
                             "children": []
                           },
@@ -1423,7 +1594,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 9,
+                            "line_number": 12,
                             "bases": [
                               "pydantic.BaseModel"
                             ],
@@ -1433,9 +1604,9 @@
                             "name": "import_snapshot",
                             "type": "function",
                             "layer": "internal",
-                            "signature": "(request)",
+                            "signature": "(request, service)",
                             "summary": "Прием полного снимка каталога через потоковую обработку тела.",
-                            "docstring": "Прием полного снимка каталога через потоковую обработку тела.\n\nArgs:\n    request: HTTP-запрос FastAPI с потоком данных.\n\nReturns:\n    Сводка импорта ImportResponse с количеством imported и dropped.",
+                            "docstring": "Прием полного снимка каталога через потоковую обработку тела.\n\nArgs:\n    request: HTTP-запрос FastAPI с потоком данных.\n    service: Сервис витрины цитат.\n\nReturns:\n    Сводка импорта ImportResponse с количеством imported и dropped.\n\nRaises:\n    HTTPException: 400, если формат снимка некорректен.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1447,7 +1618,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 17,
+                            "line_number": 20,
                             "bases": [],
                             "children": []
                           }
@@ -1478,7 +1649,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 7,
+                            "line_number": 10,
                             "bases": [],
                             "children": []
                           },
@@ -1486,9 +1657,9 @@
                             "name": "get_quote",
                             "type": "function",
                             "layer": "internal",
-                            "signature": "(quote_id, response)",
-                            "summary": "Чтение цитаты читателем с заголовком X-Source (LOCAL / CATALOG).",
-                            "docstring": "Чтение цитаты читателем с заголовком X-Source (LOCAL / CATALOG).\n\nArgs:\n    quote_id: Идентификатор запрашиваемой цитаты.\n    response: Объект ответа FastAPI для установки заголовка X-Source.\n\nReturns:\n    Объект цитаты Quote со всеми полями.",
+                            "signature": "(quote_id, response, service)",
+                            "summary": "Чтение цитаты читателем с установкой заголовка X-Source (LOCAL / CATALOG).",
+                            "docstring": "Чтение цитаты читателем с установкой заголовка X-Source (LOCAL / CATALOG).\n\nArgs:\n    quote_id: Идентификатор запрашиваемой цитаты.\n    response: Объект ответа FastAPI.\n    service: Сервис витрины цитат.\n\nReturns:\n    JSONResponse с объектом цитаты и заголовком X-Source.\n\nRaises:\n    HTTPException: 404, если цитата не найдена.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1500,7 +1671,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 11,
+                            "line_number": 14,
                             "bases": [],
                             "children": []
                           }
@@ -1531,7 +1702,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 7,
+                            "line_number": 9,
                             "bases": [],
                             "children": []
                           },
@@ -1539,9 +1710,9 @@
                             "name": "get_stats",
                             "type": "function",
                             "layer": "internal",
-                            "signature": "()",
+                            "signature": "(service)",
                             "summary": "Получение эксплуатационной статистики службы.",
-                            "docstring": "Получение эксплуатационной статистики службы.\n\nReturns:\n    Объект ShowcaseStats с накопленными метриками работы витрины.",
+                            "docstring": "Получение эксплуатационной статистики службы.\n\nArgs:\n    service: Сервис витрины цитат.\n\nReturns:\n    Объект ShowcaseStats с накопленными метриками работы витрины.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1553,7 +1724,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 11,
+                            "line_number": 13,
                             "bases": [],
                             "children": []
                           }
@@ -1585,8 +1756,8 @@
   "metadata": {
     "chutils_version": "3.8.1",
     "project_version": "0.1.0",
-    "git_commit": "1e96d502fa6ec87f52085363daa5be6a94c4ba52 (dirty)",
-    "generated_at": "2026-09-23T15:45:28.341519+00:00",
-    "project_hash": "789e3ac2e64a4e39a6ad1c0a17b24e613661883ed4f98f103b9cb60171c44961"
+    "git_commit": "eb0ca50e4ea875f875a9f943203d9fff8da3cfe9 (dirty)",
+    "generated_at": "2026-09-23T15:48:59.121519+00:00",
+    "project_hash": "cbf199f3ed0f2c045abded111de143f4ce701a90e095ced99c669ece248d9b1c"
   }
 }
