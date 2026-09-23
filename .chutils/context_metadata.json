@@ -3,7 +3,7 @@
     "api_map.md": {
       "format": "markdown",
       "target": "project",
-      "project_hash": "91a3ea5ea0f7fe7dcd0ca82383a6f46d6f82133cd640de824f7d19861d408410",
+      "project_hash": "b3126135691dfd005214cc358c23e7c0dff07cdee3e0e86535267d92f6879e44",
       "tree": false,
       "include_examples": false,
       "project_arg": "."
@@ -11,7 +11,7 @@
     "project_index.json": {
       "format": "tree",
       "target": "project",
-      "project_hash": "91a3ea5ea0f7fe7dcd0ca82383a6f46d6f82133cd640de824f7d19861d408410",
+      "project_hash": "b3126135691dfd005214cc358c23e7c0dff07cdee3e0e86535267d92f6879e44",
       "tree": true,
       "include_examples": false,
       "project_arg": "."

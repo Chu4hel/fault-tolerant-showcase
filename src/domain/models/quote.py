@@ -1,12 +1,11 @@
 """Доменные модели для цитат и источников каталога."""
 
-from enum import Enum
-from typing import Any
+from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class QuoteSource(str, Enum):
+class QuoteSource(StrEnum):
     """Источник происхождения отданной цитаты."""
 
     LOCAL = "LOCAL"

@@ -48,9 +48,7 @@ class MemoryQuoteStorage(IQuoteStorage):
         """
         raise NotImplementedError
 
-    async def import_snapshot_stream(
-        self, stream: AsyncIterator[bytes]
-    ) -> tuple[int, int]:
+    async def import_snapshot_stream(self, stream: AsyncIterator[bytes]) -> tuple[int, int]:
         """Потоковая обработка и импорт снимка каталога.
 
         Args:

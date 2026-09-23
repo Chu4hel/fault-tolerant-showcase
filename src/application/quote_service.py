@@ -1,6 +1,6 @@
 """Сервис оркестрации бизнес-логики витрины цитат."""
 
-from typing import AsyncIterator, Optional, Tuple
+from collections.abc import AsyncIterator
 
 from src.domain.interfaces.catalog_client import ICatalogClient
 from src.domain.interfaces.quote_storage import IQuoteStorage
@@ -37,9 +37,7 @@ class QuoteService:
         self._catalog_client.set_source_url(url)
         return url
 
-    async def get_quote_for_reader(
-        self, quote_id: str
-    ) -> Optional[Tuple[Quote, QuoteSource]]:
+    async def get_quote_for_reader(self, quote_id: str) -> tuple[Quote, QuoteSource] | None:
         """Получить цитату для читателя с указанием источника (LOCAL / CATALOG).
 
         Args:
@@ -73,9 +71,7 @@ class QuoteService:
         """
         raise NotImplementedError
 
-    async def import_snapshot(
-        self, stream: AsyncIterator[bytes]
-    ) -> Tuple[int, int]:
+    async def import_snapshot(self, stream: AsyncIterator[bytes]) -> tuple[int, int]:
         """Принять и обработать полный снимок каталога.
 
         Args:

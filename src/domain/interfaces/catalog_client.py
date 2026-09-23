@@ -1,7 +1,6 @@
 """Интерфейс HTTP-клиента для взаимодействия с внешним каталогом."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from src.domain.models.quote import Quote
 
@@ -19,7 +18,7 @@ class ICatalogClient(ABC):
         pass
 
     @abstractmethod
-    def get_source_url(self) -> Optional[str]:
+    def get_source_url(self) -> str | None:
         """Получить текущий базовый URL каталога.
 
         Returns:
@@ -28,7 +27,7 @@ class ICatalogClient(ABC):
         pass
 
     @abstractmethod
-    async def fetch_quote(self, quote_id: str) -> Optional[Quote]:
+    async def fetch_quote(self, quote_id: str) -> Quote | None:
         """Запросить цитату из внешнего каталога.
 
         Args:

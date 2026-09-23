@@ -7,7 +7,18 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
+
+# IDE & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # chutils
 config.local.yml

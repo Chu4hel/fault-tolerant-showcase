@@ -129,7 +129,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 53,
+                        "line_number": 51,
                         "bases": [],
                         "children": []
                       },
@@ -149,7 +149,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 65,
+                        "line_number": 63,
                         "bases": [],
                         "children": []
                       },
@@ -169,7 +169,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 76,
+                        "line_number": 74,
                         "bases": [],
                         "children": []
                       },
@@ -189,7 +189,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 89,
+                        "line_number": 85,
                         "bases": [],
                         "children": []
                       }
@@ -294,7 +294,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 9,
+                        "line_number": 8,
                         "bases": [
                           "abc.ABC"
                         ],
@@ -317,7 +317,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 13,
+                            "line_number": 12,
                             "bases": [],
                             "children": []
                           },
@@ -339,7 +339,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 22,
+                            "line_number": 21,
                             "bases": [],
                             "children": []
                           },
@@ -361,7 +361,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 31,
+                            "line_number": 30,
                             "bases": [],
                             "children": []
                           }
@@ -505,7 +505,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 61,
+                            "line_number": 59,
                             "bases": [],
                             "children": []
                           }
@@ -549,10 +549,9 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 9,
+                        "line_number": 8,
                         "bases": [
-                          "str",
-                          "enum.Enum"
+                          "enum.StrEnum"
                         ],
                         "children": []
                       },
@@ -572,7 +571,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 16,
+                        "line_number": 15,
                         "bases": [
                           "pydantic.BaseModel"
                         ],
@@ -594,7 +593,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 32,
+                        "line_number": 31,
                         "bases": [
                           "pydantic.BaseModel"
                         ],
@@ -616,7 +615,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 44,
+                        "line_number": 43,
                         "bases": [
                           "pydantic.BaseModel"
                         ],
@@ -704,7 +703,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 11,
+                        "line_number": 9,
                         "bases": [
                           "src.domain.interfaces.catalog_client.ICatalogClient"
                         ],
@@ -725,7 +724,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 14,
+                            "line_number": 12,
                             "bases": [],
                             "children": []
                           },
@@ -745,7 +744,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 24,
+                            "line_number": 22,
                             "bases": [],
                             "children": []
                           },
@@ -765,7 +764,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 32,
+                            "line_number": 30,
                             "bases": [],
                             "children": []
                           },
@@ -785,7 +784,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 40,
+                            "line_number": 38,
                             "bases": [],
                             "children": []
                           }
@@ -950,7 +949,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 64,
+                            "line_number": 62,
                             "bases": [],
                             "children": []
                           }
@@ -1462,8 +1461,8 @@
   "metadata": {
     "chutils_version": "3.8.1",
     "project_version": "0.1.0",
-    "git_commit": "fb15c4fa5d966d14300716607a37b458773e3050 (dirty)",
-    "generated_at": "2026-09-23T15:35:36.815549+00:00",
-    "project_hash": "91a3ea5ea0f7fe7dcd0ca82383a6f46d6f82133cd640de824f7d19861d408410"
+    "git_commit": "177d7b4138feb0703becbe7d07f20a8a5036dfce (dirty)",
+    "generated_at": "2026-09-23T15:40:30.198575+00:00",
+    "project_hash": "b3126135691dfd005214cc358c23e7c0dff07cdee3e0e86535267d92f6879e44"
   }
 }

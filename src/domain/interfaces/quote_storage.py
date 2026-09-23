@@ -1,7 +1,7 @@
 """Интерфейс локального хранилища цитат."""
 
 from abc import ABC, abstractmethod
-from typing import AsyncIterator, Optional, Tuple
+from collections.abc import AsyncIterator
 
 from src.domain.models.quote import Quote
 from src.domain.models.stats import ShowcaseStats
@@ -11,7 +11,7 @@ class IQuoteStorage(ABC):
     """Абстрактный интерфейс in-memory хранилища цитат."""
 
     @abstractmethod
-    async def get(self, quote_id: str) -> Optional[Quote]:
+    async def get(self, quote_id: str) -> Quote | None:
         """Получить цитату по идентификатору из локального хранилища.
 
         Args:
@@ -44,9 +44,7 @@ class IQuoteStorage(ABC):
         pass
 
     @abstractmethod
-    async def import_snapshot_stream(
-        self, stream: AsyncIterator[bytes]
-    ) -> Tuple[int, int]:
+    async def import_snapshot_stream(self, stream: AsyncIterator[bytes]) -> tuple[int, int]:
         """Импортировать снимок каталога из потока данных.
 
         Args:

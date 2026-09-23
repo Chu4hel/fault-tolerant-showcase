@@ -1,9 +1,9 @@
 ---
 chutils_version: 3.8.1
 project_version: 0.1.0
-git_commit: fb15c4fa5d966d14300716607a37b458773e3050 (dirty)
-generated_at: 2026-09-23T15:35:35.654535+00:00
-project_hash: 91a3ea5ea0f7fe7dcd0ca82383a6f46d6f82133cd640de824f7d19861d408410
+git_commit: 177d7b4138feb0703becbe7d07f20a8a5036dfce (dirty)
+generated_at: 2026-09-23T15:40:28.878470+00:00
+project_hash: b3126135691dfd005214cc358c23e7c0dff07cdee3e0e86535267d92f6879e44
 ---
 
 # Public API Map: quote-showcase
