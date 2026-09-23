@@ -909,12 +909,35 @@
                     "children": [],
                     "symbols": [
                       {
+                        "name": "_raw_catalog_get",
+                        "type": "function",
+                        "layer": "private",
+                        "signature": "(client, url)",
+                        "summary": "Выполняет сетевой запрос с защитой Bulkhead и Circuit Breaker.",
+                        "docstring": "Выполняет сетевой запрос с защитой Bulkhead и Circuit Breaker.\n\nArgs:\n    client: Экземпляр асинхронного веб-клиента.\n    url: Полный URL для запроса.\n\nReturns:\n    Сетевой ответ httpx.Response.",
+                        "breadcrumbs": {
+                          "is_async": true,
+                          "is_thread_safe": false,
+                          "is_heavy": false,
+                          "is_abstract": false,
+                          "decorators": [
+                            "bulkhead",
+                            "circuit_breaker"
+                          ],
+                          "tags": [],
+                          "custom_metadata": {}
+                        },
+                        "line_number": 21,
+                        "bases": [],
+                        "children": []
+                      },
+                      {
                         "name": "HttpCatalogClient",
                         "type": "class",
                         "layer": "internal",
                         "signature": "",
-                        "summary": "Асинхронный HTTP-клиент каталога с защитой от перегрузки и поддержкой Retry-After.",
-                        "docstring": "Асинхронный HTTP-клиент каталога с защитой от перегрузки и поддержкой Retry-After.",
+                        "summary": "Асинхронный HTTP-клиент каталога с Circuit Breaker, Bulkhead и поддержкой Retry-After.",
+                        "docstring": "Асинхронный HTTP-клиент каталога с Circuit Breaker, Bulkhead и поддержкой Retry-After.",
                         "breadcrumbs": {
                           "is_async": false,
                           "is_thread_safe": false,
@@ -924,7 +947,7 @@
                           "tags": [],
                           "custom_metadata": {}
                         },
-                        "line_number": 13,
+                        "line_number": 35,
                         "bases": [
                           "src.domain.interfaces.catalog_client.ICatalogClient"
                         ],
@@ -945,7 +968,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 16,
+                            "line_number": 38,
                             "bases": [],
                             "children": []
                           },
@@ -965,7 +988,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 32,
+                            "line_number": 54,
                             "bases": [],
                             "children": []
                           },
@@ -985,7 +1008,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 40,
+                            "line_number": 62,
                             "bases": [],
                             "children": []
                           },
@@ -1005,7 +1028,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 48,
+                            "line_number": 70,
                             "bases": [],
                             "children": []
                           },
@@ -1025,7 +1048,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 61,
+                            "line_number": 83,
                             "bases": [],
                             "children": []
                           },
@@ -1034,8 +1057,8 @@
                             "type": "method",
                             "layer": "internal",
                             "signature": "(self, quote_id)",
-                            "summary": "Запрашивает цитату из внешнего каталога с дедупликацией и защитой от перегрузки.",
-                            "docstring": "Запрашивает цитату из внешнего каталога с дедупликацией и защитой от перегрузки.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Экземпляр Quote, если найден (200), либо None при 404, 503 или недоступности.",
+                            "summary": "Запрашивает цитату из внешнего каталога с защитой от перегрузки.",
+                            "docstring": "Запрашивает цитату из внешнего каталога с защитой от перегрузки.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Экземпляр Quote, если найден (200), либо None при 404, 503, перегрузке или сбое.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1045,7 +1068,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 67,
+                            "line_number": 89,
                             "bases": [],
                             "children": []
                           },
@@ -1054,8 +1077,8 @@
                             "type": "method",
                             "layer": "private",
                             "signature": "(self, quote_id)",
-                            "summary": "Выполняет реальный сетевой запрос к каталогу.",
-                            "docstring": "Выполняет реальный сетевой запрос к каталогу.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Объект Quote или None.",
+                            "summary": "Выполняет защищенный сетевой запрос к каталогу.",
+                            "docstring": "Выполняет защищенный сетевой запрос к каталогу.\n\nArgs:\n    quote_id: Идентификатор цитаты.\n\nReturns:\n    Объект Quote или None.",
                             "breadcrumbs": {
                               "is_async": true,
                               "is_thread_safe": false,
@@ -1065,7 +1088,7 @@
                               "tags": [],
                               "custom_metadata": {}
                             },
-                            "line_number": 102,
+                            "line_number": 124,
                             "bases": [],
                             "children": []
                           }
@@ -1878,6 +1901,26 @@
   "dependency_graph": [
     {
       "source": "src/infrastructure/catalog_client/http_catalog_client",
+      "target": "chutils/BulkheadLimitExceeded",
+      "weight": 1
+    },
+    {
+      "source": "src/infrastructure/catalog_client/http_catalog_client",
+      "target": "chutils/CircuitBreakerOpenError",
+      "weight": 1
+    },
+    {
+      "source": "src/infrastructure/catalog_client/http_catalog_client",
+      "target": "chutils/bulkhead",
+      "weight": 1
+    },
+    {
+      "source": "src/infrastructure/catalog_client/http_catalog_client",
+      "target": "chutils/circuit_breaker",
+      "weight": 1
+    },
+    {
+      "source": "src/infrastructure/catalog_client/http_catalog_client",
       "target": "chutils/web/AsyncWebClient",
       "weight": 1
     }
@@ -1886,8 +1929,8 @@
   "metadata": {
     "chutils_version": "3.8.1",
     "project_version": "0.1.0",
-    "git_commit": "ea41bbb5f3ff558a73a50569ca760c96676c5da2 (dirty)",
-    "generated_at": "2026-09-23T15:59:14.789782+00:00",
-    "project_hash": "70b6e386f45e6040ab02194c2df82c092780face67c58f9ceee0ea48a0ca564d"
+    "git_commit": "b7cb3cbd654a4674e3f6685255402a3a135fc80e (dirty)",
+    "generated_at": "2026-09-23T16:04:23.220272+00:00",
+    "project_hash": "4ee99c8174cab192f457dd5530001f86badef9cec2630bfcd651a40a230e12a5"
   }
 }

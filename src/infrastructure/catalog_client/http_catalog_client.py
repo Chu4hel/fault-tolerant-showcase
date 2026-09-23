@@ -2,16 +2,38 @@
 
 import asyncio
 import time
+from typing import cast
 
 import httpx  # chutils: ignore[ChutilsIntegrationRule]
+from chutils import BulkheadLimitExceeded, CircuitBreakerOpenError, bulkhead, circuit_breaker
 from chutils.web import AsyncWebClient
 
 from src.domain.interfaces.catalog_client import ICatalogClient
 from src.domain.models.quote import Quote
 
 
+@bulkhead(max_concurrent=16, max_waiting=32, timeout=0.2, fallback=None)  # type: ignore[untyped-decorator]
+@circuit_breaker(  # type: ignore[untyped-decorator]
+    failure_threshold=3,
+    recovery_timeout=5.0,
+    exceptions=(httpx.TimeoutException, httpx.NetworkError),
+)
+async def _raw_catalog_get(client: AsyncWebClient, url: str) -> httpx.Response:
+    """Выполняет сетевой запрос с защитой Bulkhead и Circuit Breaker.
+
+    Args:
+        client: Экземпляр асинхронного веб-клиента.
+        url: Полный URL для запроса.
+
+    Returns:
+        Сетевой ответ httpx.Response.
+    """
+    response = await client.get(url)
+    return cast(httpx.Response, response)
+
+
 class HttpCatalogClient(ICatalogClient):
-    """Асинхронный HTTP-клиент каталога с защитой от перегрузки и поддержкой Retry-After."""
+    """Асинхронный HTTP-клиент каталога с Circuit Breaker, Bulkhead и поддержкой Retry-After."""
 
     def __init__(self, timeout_seconds: float = 2.5) -> None:
         """Инициализирует HTTP-клиент каталога.
@@ -65,18 +87,18 @@ class HttpCatalogClient(ICatalogClient):
             self._client = None
 
     async def fetch_quote(self, quote_id: str) -> Quote | None:
-        """Запрашивает цитату из внешнего каталога с дедупликацией и защитой от перегрузки.
+        """Запрашивает цитату из внешнего каталога с защитой от перегрузки.
 
         Args:
             quote_id: Идентификатор цитаты.
 
         Returns:
-            Экземпляр Quote, если найден (200), либо None при 404, 503 или недоступности.
+            Экземпляр Quote, если найден (200), либо None при 404, 503, перегрузке или сбое.
         """
         if not self._source_url:
             return None
 
-        # Если каталог попросил подождать (Retry-After) или лежит, не долбим его
+        # Если каталог попросил подождать (Retry-After), не отправляем запросы
         now = time.monotonic()
         if now < self._busy_until:
             return None
@@ -100,7 +122,7 @@ class HttpCatalogClient(ICatalogClient):
             self._in_flight.pop(quote_id, None)
 
     async def _execute_request(self, quote_id: str) -> Quote | None:
-        """Выполняет реальный сетевой запрос к каталогу.
+        """Выполняет защищенный сетевой запрос к каталогу.
 
         Args:
             quote_id: Идентификатор цитаты.
@@ -115,7 +137,11 @@ class HttpCatalogClient(ICatalogClient):
         url = f"{self._source_url}/quote/{quote_id}"
 
         try:
-            response = await client.get(url)
+            response = await _raw_catalog_get(client, url)
+            if response is None:
+                # Bulkhead ограничил параллельные запросы к каталогу
+                return None
+
             if response.status_code == 200:
                 data = response.json()
                 return Quote.model_validate(data)
@@ -135,8 +161,11 @@ class HttpCatalogClient(ICatalogClient):
                 return None
 
             return None
+        except (CircuitBreakerOpenError, BulkheadLimitExceeded):
+            # Защита сработала: цепь разомкнута или исчерпан лимит слотов
+            return None
         except (httpx.TimeoutException, httpx.NetworkError):
-            # Каталог упал или не отвечает — пауза 2 секунды, чтобы дать ему подняться
+            # Каталог упал — пауза 2 секунды дополнительно к Circuit Breaker
             self._busy_until = time.monotonic() + 2.0
             return None
         except Exception:
